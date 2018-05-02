@@ -18,7 +18,7 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 
 	Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
-	Ipp64f params[9] = {.5, 475, 525, -60, 17, 9, .5, 1, 8 };
+	Ipp64f params[9] = {.5, 475, 525, -60, 16, 9, .5, 1, 8 };
 
 	Ipp64f *condout = new Ipp64f[46];
 	Ipp64f tau = .5;
@@ -54,9 +54,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *argy = new Ipp64f[nPoints];
 	Ipp64f *argz = new Ipp64f[nPoints];
 
-	Ipp64f *tempx = new Ipp64f[10 * nPoints];
-	Ipp64f *tempy = new Ipp64f[10 * nPoints];
-	Ipp64f *tempz = new Ipp64f[10 * nPoints];
+	Ipp64f *tempx = new Ipp64f[16 * nPoints];
+	Ipp64f *tempy = new Ipp64f[16 * nPoints];
+	Ipp64f *tempz = new Ipp64f[16 * nPoints];
 
 	Ipp64f *k1x = new Ipp64f[nPoints];
 	Ipp64f *k1y = new Ipp64f[nPoints];
@@ -82,7 +82,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 
 	argx[0] = 1;
-	argy[0] = 1;
+	argy[0] = 2;
 	argz[0] = 1;
 	veloX(params, argx, argy, argz, 1, tempx, vx);
 	cout << vx[0] << endl;
@@ -269,6 +269,36 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(&temp[2 * length], 22.8429*params[4-1], temp, length);
 	ippsAdd_64f_I(temp, out, length);
 
+	ippsMulC_64f(kx, 2*3.74767, temp, length); //term for sin(2 kx), param5
+	vdSin(length, temp, &temp[1 * length]);
+	ippsMulC_64f(&temp[1 * length], params[5 - 1] * 11.4215*2, temp, length);
+	ippsAdd_64f_I(temp, out, length);
+
+	ippsMulC_64f(kx,  3.74767, temp, length); //term for long complicated kz term, param6
+	vdSin(length, temp, &temp[1 * length]); // sin kx
+	vdCos(length, temp, &temp[2 * length]); // cos kx
+	ippsMulC_64f(ky, 3.74767, temp, length); 
+	vdSin(length, temp, &temp[3 * length]); // sin ky
+	vdCos(length, temp, &temp[4 * length]); // cos ky
+	ippsMulC_64f(kx, 3.74767/2, temp, length); 
+	vdSin(length, temp, &temp[5 * length]); // sin kx/2
+	vdCos(length, temp, &temp[6 * length]); // cos kx/2
+	ippsMulC_64f(ky, 3.74767/2, temp, length);
+	vdSin(length, temp, &temp[7 * length]); // sin ky/2
+	vdCos(length, temp, &temp[8 * length]); // cos ky/2
+	ippsMulC_64f(kz, 3.3, temp, length);
+	vdCos(length, temp, &temp[9 * length]); // cos kz/2
+	ippsMul_64f(&temp[6 * length], &temp[1 * length], &temp[10 * length], length);//cos kx/2 * sin kx
+	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
+	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
+	ippsMulC_64f(&temp[11 * length],65893, &temp[12 * length], length);//mult by constant
+	ippsMul_64f(&temp[5 * length], &temp[12 * length], &temp[13 * length], length);// mult by sin kx/2
+	ippsAdd_64f(&temp[13 * length], &temp[10 * length], temp, length);//add those two together
+	ippsMul_64f_I(&temp[9 * length], temp, length);//mult by cos kz/2
+	ippsMul_64f_I(&temp[11 * length], temp, length);//mult by cos kx - cos ky
+	ippsMul_64f_I(&temp[8 * length], temp, length);//mult by cos ky/2
+	ippsMulC_64f_I(params[6 - 1] * 0.0000866667, temp, length);
+	ippsAdd_64f_I(temp, out, length);
 
 	return 0;
 }
