@@ -2,9 +2,13 @@
 using namespace std;
 
 //sdf
-int veloX(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
-int veloY(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
-int veloZ(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+//int veloX(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+//int veloY(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+//int veloZ(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+
+int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
+int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out);
 
 int fx(Ipp64f * field, Ipp64f *vy, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out);
 int fy(Ipp64f * field, Ipp64f *vx, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out);
@@ -14,10 +18,12 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 
 	Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
+	Ipp64f params[9] = {.5, 475, 525, -60, 17, 9, .5, 1, 8 };
+
 	Ipp64f *condout = new Ipp64f[46];
 	Ipp64f tau = .5;
 	Ipp64f final = 10;
-	long steps = 10000;
+	long steps = 1000;
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
 
@@ -48,9 +54,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *argy = new Ipp64f[nPoints];
 	Ipp64f *argz = new Ipp64f[nPoints];
 
-	Ipp64f *tempx = new Ipp64f[2 * nPoints];
-	Ipp64f *tempy = new Ipp64f[2 * nPoints];
-	Ipp64f *tempz = new Ipp64f[2 * nPoints];
+	Ipp64f *tempx = new Ipp64f[10 * nPoints];
+	Ipp64f *tempy = new Ipp64f[10 * nPoints];
+	Ipp64f *tempz = new Ipp64f[10 * nPoints];
 
 	Ipp64f *k1x = new Ipp64f[nPoints];
 	Ipp64f *k1y = new Ipp64f[nPoints];
@@ -75,6 +81,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		output[2 * nPoints + j] = starts[j * 3 + 2];
 	}
 
+	argx[0] = 1;
+	argy[0] = 1;
+	argz[0] = 1;
+	veloX(params, argx, argy, argz, 1, tempx, vx);
+	cout << vx[0] << endl;
+
 	for (int th = 0; th < 46; th++) {
 
 		for (int p = 0; p < steps; p++) { //re-initialize times SLOW STEP CREATE TEMP VARIABLE
@@ -91,9 +103,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsCopy_64f(&output[nPoints * (3 * (i - 1) + 0)], argx, nPoints);//copy arguments for k1;
 			ippsCopy_64f(&output[nPoints * (3 * (i - 1) + 1)], argy, nPoints);
 			ippsCopy_64f(&output[nPoints * (3 * (i - 1) + 2)], argz, nPoints);
-			veloX(argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
-			veloY(argx, argy, argz, nPoints, tempy, vy);
-			veloZ(argx, argy, argz, nPoints, tempz, vz);
+			veloX(params, argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
+			veloY(params, argx, argy, argz, nPoints, tempy, vy);
+			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			ippsCopy_64f(vz, &vzStorage[nPoints * (i - 1)], nPoints);//store vz for conductivity later
 
 			fx(field, vy, vz, nPoints, tempx, k1x); //calculate evolution in k and store in k1
@@ -106,9 +118,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(tempx, &output[nPoints * (3 * (i - 1) + 0)], argx, nPoints); //add step to previous k point, load into arguments for k2;
 			ippsAdd_64f(tempy, &output[nPoints * (3 * (i - 1) + 1)], argy, nPoints);
 			ippsAdd_64f(tempz, &output[nPoints * (3 * (i - 1) + 2)], argz, nPoints);
-			veloX(argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
-			veloY(argx, argy, argz, nPoints, tempy, vy);
-			veloZ(argx, argy, argz, nPoints, tempz, vz);
+			veloX(params, argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
+			veloY(params, argx, argy, argz, nPoints, tempy, vy);
+			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			fx(field, vy, vz, nPoints, tempx, k2x); //calculate evolution in k and store in k2
 			fy(field, vx, vz, nPoints, tempy, k2y);
 			fz(field, vx, vy, nPoints, tempz, k2z);
@@ -119,9 +131,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(tempx, &output[nPoints * (3 * (i - 1) + 0)], argx, nPoints); //add step to previous k point, load into arguments for k3;
 			ippsAdd_64f(tempy, &output[nPoints * (3 * (i - 1) + 1)], argy, nPoints);
 			ippsAdd_64f(tempz, &output[nPoints * (3 * (i - 1) + 2)], argz, nPoints);
-			veloX(argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
-			veloY(argx, argy, argz, nPoints, tempy, vy);
-			veloZ(argx, argy, argz, nPoints, tempz, vz);
+			veloX(params, argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
+			veloY(params, argx, argy, argz, nPoints, tempy, vy);
+			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			fx(field, vy, vz, nPoints, tempx, k3x); //calculate evolution in k and store in k3
 			fy(field, vx, vz, nPoints, tempy, k3y);
 			fz(field, vx, vy, nPoints, tempz, k3z);
@@ -132,9 +144,9 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(tempx, &output[nPoints * (3 * (i - 1) + 0)], argx, nPoints); //add step to previous k point, load into arguments for k4;
 			ippsAdd_64f(tempy, &output[nPoints * (3 * (i - 1) + 1)], argy, nPoints);
 			ippsAdd_64f(tempz, &output[nPoints * (3 * (i - 1) + 2)], argz, nPoints);
-			veloX(argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
-			veloY(argx, argy, argz, nPoints, tempy, vy);
-			veloZ(argx, argy, argz, nPoints, tempz, vz);
+			veloX(params, argx, argy, argz, nPoints, tempx, vx); //calculate velocities;
+			veloY(params, argx, argy, argz, nPoints, tempy, vy);
+			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			fx(field, vy, vz, nPoints, tempx, k4x); //calculate evolution in k and store in k4
 			fy(field, vx, vz, nPoints, tempy, k4y);
 			fz(field, vx, vy, nPoints, tempz, k4z);
@@ -170,15 +182,15 @@ int _tmain(int argc, _TCHAR* argv[])
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 0)], argx, nPoints);//get velocity for last point
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 1)], argy, nPoints);
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 2)], argz, nPoints);
-		veloZ(argx, argy, argz, nPoints, tempz, vz);
+		veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 		ippsCopy_64f(vz, &vzStorage[nPoints * (steps - 1)], nPoints);
 
 		ippsCopy_64f(&output[nPoints * (0)], argx, nPoints);//initial velocities for DOS calc;
 		ippsCopy_64f(&output[nPoints * (1)], argy, nPoints);
 		ippsCopy_64f(&output[nPoints * (2)], argz, nPoints);
-		veloX(argx, argy, argz, nPoints, tempx, vx); //velocities for DOS are stored in vx, vy, and vz buffers.
-		veloY(argx, argy, argz, nPoints, tempy, vy);
-		veloZ(argx, argy, argz, nPoints, tempz, vz);
+		veloX(params, argx, argy, argz, nPoints, tempx, vx); //velocities for DOS are stored in vx, vy, and vz buffers.
+		veloY(params, argx, argy, argz, nPoints, tempy, vy);
+		veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 
 		ippsSqr_64f_I(vx, nPoints);//in-place square of velocities
 		ippsSqr_64f_I(vy, nPoints);
@@ -244,29 +256,58 @@ int _tmain(int argc, _TCHAR* argv[])
 	return 0;
 }
 
-int veloX(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
-	/*return 5710 * sin(3.74767*kx);*/
-	ippsMulC_64f(kx, 3.74767, temp, length);
-	vdSin(length, temp, out);
-	ippsMulC_64f_I(5710, out, length);
-	return 0;
-}
+int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+	ippsMulC_64f(kx, 3.74767, temp, length); //term for sin(kx), param3
+	vdSin(length, temp, &temp[1 * length]);
+	ippsMulC_64f(&temp[1 * length], params[3 - 1] * 11.4215, out, length);
 
-int veloY(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
-	/*return 5710 * sin(3.74767*ky);*/
+	ippsMulC_64f(kx, 3.74767, temp, length); //term for sin(kx)cos(ky), param4
+	vdSin(length, temp, &temp[1 * length]);
 	ippsMulC_64f(ky, 3.74767, temp, length);
-	vdSin(length, temp, out);
-	ippsMulC_64f_I(5710, out, length);
+	vdCos(length, temp, &temp[2 * length]);
+	ippsMul_64f_I(&temp[1 * length], &temp[2 * length], length);
+	ippsMulC_64f(&temp[2 * length], 22.8429*params[4-1], temp, length);
+	ippsAdd_64f_I(temp, out, length);
+
+
 	return 0;
 }
 
-int veloZ(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
-	/*return  .10 * sin(3.3*kz);*/
-	ippsMulC_64f(kz, 3.3, temp, length);
-	vdSin(length, temp, out);
-	ippsMulC_64f_I(0.1, out, length);
+int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+	
 	return 0;
 }
+
+int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+	
+	return 0;
+}
+
+
+
+//int veloX(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+//	/*return 5710 * sin(3.74767*kx);*/
+//	ippsMulC_64f(kx, 3.74767, temp, length);
+//	vdSin(length, temp, out);
+//	ippsMulC_64f_I(5710, out, length);
+//	return 0;
+//}
+//
+//int veloY(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+//	/*return 5710 * sin(3.74767*ky);*/
+//	ippsMulC_64f(ky, 3.74767, temp, length);
+//	vdSin(length, temp, out);
+//	ippsMulC_64f_I(5710, out, length);
+//	return 0;
+//}
+//
+//int veloZ(Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+//	/*return  .10 * sin(3.3*kz);*/
+//	ippsMulC_64f(kz, 3.3, temp, length);
+//	vdSin(length, temp, out);
+//	ippsMulC_64f_I(0.1, out, length);
+//	return 0;
+//}
 
 int fx(Ipp64f * field, Ipp64f *vy, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out) {
 	/*return -1 / (11538.5) * (vy * field[2] - vz*field[1]);*/

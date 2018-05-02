@@ -32,13 +32,13 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AMRO.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ArrayAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DataExtractor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AMRO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
