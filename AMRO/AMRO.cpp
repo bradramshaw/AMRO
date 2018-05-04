@@ -23,7 +23,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *condout = new Ipp64f[46];
 	Ipp64f tau = .5;
 	Ipp64f final = 10;
-	long steps = 1000;
+	long steps = 500;
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
 
@@ -81,12 +81,12 @@ int _tmain(int argc, _TCHAR* argv[])
 		output[2 * nPoints + j] = starts[j * 3 + 2];
 	}
 
-	argx[0] = 1;
+	/*argx[0] = 1;
 	argy[0] = 2;
 	argz[0] = 1;
 	veloZ(params, argx, argy, argz, 1, tempz, vz);
 	cout << vz[0] << endl;
-
+*/
 	for (int th = 0; th < 46; th++) {
 
 		for (int p = 0; p < steps; p++) { //re-initialize times SLOW STEP CREATE TEMP VARIABLE
