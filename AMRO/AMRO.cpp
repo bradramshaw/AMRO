@@ -14,11 +14,13 @@ int fx(Ipp64f * field, Ipp64f *vy, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f 
 int fy(Ipp64f * field, Ipp64f *vx, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out);
 int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f *out);
 
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out);
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
 	Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
-	Ipp64f params[9] = {.5, 475, 525, -60, 16, 9, .5, 1, 8 };
+	Ipp64f params[9] = {.5, 475, 525, -60, 16, 9, .5, 14, 8 };
 
 	Ipp64f *condout = new Ipp64f[46];
 	Ipp64f tau = .5;
@@ -45,6 +47,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *DOS = new Ipp64f[nPoints];
 	Ipp64f *ones = new Ipp64f[nPoints];//for inverting
 	ippsSet_64f(1, ones, nPoints);
+	Ipp64f *taus = new Ipp64f[nPoints];//phi dependent taus
 
 	Ipp64f *vx = new Ipp64f[nPoints];
 	Ipp64f *vy = new Ipp64f[nPoints];
@@ -81,6 +84,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		output[2 * nPoints + j] = starts[j * 3 + 2];
 	}
 
+
+
 	/*argx[0] = 1;
 	argy[0] = 2;
 	argz[0] = 1;
@@ -98,6 +103,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		field[1] = 0;
 		field[2] = field45 * cos(thetas[th]);
 
+
+
 		for (int i = 1; i < steps; i++) {
 
 			ippsCopy_64f(&output[nPoints * (3 * (i - 1) + 0)], argx, nPoints);//copy arguments for k1;
@@ -107,6 +114,19 @@ int _tmain(int argc, _TCHAR* argv[])
 			veloY(params, argx, argy, argz, nPoints, tempy, vy);
 			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			ippsCopy_64f(vz, &vzStorage[nPoints * (i - 1)], nPoints);//store vz for conductivity later
+			taufun(params, argx, argy, nPoints, tempx, taus);
+
+			for (int z = 0; z < nPoints; z++) {
+				if (th == 1 && i == 1) {
+					cout << setprecision(20) << taus[z] << " " << endl;
+				}
+			}
+			/*for (int z = 0; z < nPoints; z++) {
+				if (th == 1 && i == 1) {
+					cout << setprecision(20)<< argx[z] << " " << endl;
+				}
+			}*/
+			
 
 			fx(field, vy, vz, nPoints, tempx, k1x); //calculate evolution in k and store in k1
 			fy(field, vx, vz, nPoints, tempy, k1y);
@@ -179,6 +199,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(&output[nPoints * (3 * (i - 1) + 2)], tempz, &output[nPoints * (3 * i + 2)], nPoints);
 		}
 
+		
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 0)], argx, nPoints);//get velocity for last point
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 1)], argy, nPoints);
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 2)], argz, nPoints);
@@ -222,6 +243,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		condout[th] = total;
 	}
+
+
 
 	duration = (std::clock() - startT) / (Ipp64f)CLOCKS_PER_SEC;
 	cout << "time: " << duration << endl;
@@ -429,3 +452,12 @@ int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f 
 	return 0;
 }
 
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out) {
+	ippsDiv_64f(kx, ky, temp, length);
+	ippsAtan_64f_A50(temp, &temp[length], length);
+	vdSin()
+	ippsCopy_64f(&temp[length], out, length);
+
+
+	return 0;
+}
