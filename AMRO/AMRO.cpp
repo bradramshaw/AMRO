@@ -360,7 +360,7 @@ int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[8 * length], &temp[3 * length], &temp[10 * length], length);//cos ky/2 * sin ky
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
-	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
+	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky CHECK SIGN
 	ippsMulC_64f(&temp[11 * length], 65893, &temp[12 * length], length);//mult by constant
 	ippsMul_64f(&temp[7 * length], &temp[12 * length], &temp[13 * length], length);// mult by sin kx/2
 	ippsSub_64f(&temp[10 * length], &temp[13 * length], temp, length);//add those two together (neg sign)	
@@ -455,8 +455,13 @@ int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f 
 int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out) {
 	ippsDiv_64f(kx, ky, temp, length);
 	ippsAtan_64f_A50(temp, &temp[length], length);
-	vdSin()
-	ippsCopy_64f(&temp[length], out, length);
+	vdSin(length, &temp[length], &temp[2 * length]);
+	ippsSqr_64f_I(&temp[2 * length], length);
+	vdCos(length, &temp[length], &temp[3 * length]);
+	ippsSqr_64f_I(&temp[3 * length], length);
+	ippsSub_64f(&temp[3 * length], &temp[2 * length], &temp[4 * length], length);
+
+	ippsCopy_64f(&temp[4 * length], out, length);
 
 
 	return 0;
