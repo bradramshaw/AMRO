@@ -217,14 +217,36 @@ int _tmain(int argc, _TCHAR* argv[])
 		ippsDiv_64f(tempx, ones, DOS, nPoints);
 
 		ippsDivC_64f_I(tau, times, steps);//exponential stuff, negative tau is taken care of in time
+
 		ippsExp_64f_I(times, steps);
 		ippsMulC_64f_I((1E-12)*h, times, steps);
 
 		ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
 		for (int i = 0; i < steps; i++) {
+		
+			//taufun(params, &output[nPoints*(i + 0)], &output[nPoints*(i + 1)], nPoints, tempx, taus);
+			//
+			//ippsInv_64f_A50(taus, tempx, nPoints);
+			//ippsMulC_64f_I(times[i], tempx, nPoints);
+			//
+			//ippsExp_64f_I(tempx, nPoints);
+
+			//
+
+			//ippsMulC_64f_I((1E-12)*h, tempx, nPoints);
+
+			//ippsMulC_64f_I(tempx[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+			//
+			
 			ippsMulC_64f_I(times[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+			for (int j = 0; j < nPoints; j++) {
+				if (i == 1 && th == 0) {
+					cout << times[j] << endl;
+				}
+			}
 		}
+		
 
 		for (int i = 0; i < (steps - 1); i++) {
 			ippsAdd_64f_I(&vzStorage[i*nPoints], &vzStorage[(i + 1)*nPoints], nPoints); //add all and accumulate in last vector
