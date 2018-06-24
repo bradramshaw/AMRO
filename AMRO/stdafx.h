@@ -14,10 +14,12 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <iomanip>
 
 #include "DataExtractor.h"
 
 #include <ipps.h>
+#include <ippvm.h>
 #include <mkl.h>
 #include "mkl_vsl.h"
 #include "mkl_vsl_functions.h"

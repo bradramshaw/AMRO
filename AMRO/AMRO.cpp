@@ -14,9 +14,12 @@ int fx(Ipp64f * field, Ipp64f *vy, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f 
 int fy(Ipp64f * field, Ipp64f *vx, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out);
 int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f *out);
 
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out);
+
 int _tmain(int argc, _TCHAR* argv[])
 {
 
+<<<<<<< HEAD
 
 	//Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
 	Ipp64f thetas[91] = {0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159};
@@ -25,8 +28,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	Ipp64f *condout = new Ipp64f[46];
+=======
+	Ipp64f thetas[91] = { 0.,0.0349066,0.0698132,0.10472,0.139626,0.174533,0.20944,0.244346,0.279253,0.314159,0.349066,0.383972,0.418879,0.453786,0.488692,0.523599,0.558505,0.593412,0.628319,0.663225,0.698132,0.733038,0.767945,0.802851,0.837758,0.872665,0.907571,0.942478,0.977384,1.01229,1.0472,1.0821,1.11701,1.15192,1.18682,1.22173,1.25664,1.29154,1.32645,1.36136,1.39626,1.43117,1.46608,1.50098,1.53589,1.5708,1.6057,1.64061,1.67552,1.71042,1.74533,1.78024,1.81514,1.85005,1.88496,1.91986,1.95477,1.98968,2.02458,2.05949,2.0944,2.1293,2.16421,2.19911,2.23402,2.26893,2.30383,2.33874,2.37365,2.40855,2.44346,2.47837,2.51327,2.54818,2.58309,2.61799,2.6529,2.68781,2.72271,2.75762,2.79253,2.82743,2.86234,2.89725,2.93215,2.96706,3.00197,3.03687,3.07178,3.10669,3.14159 };
+	Ipp64f params[9] = {.5, 475, 525, -60, 16, 9, .5, 14, 8 };
+	int Nthetas = 91;
+	Ipp64f *condout = new Ipp64f[Nthetas];
+>>>>>>> 4eef1d41d073f4ceb0d6f4ce6c7bb2d8b989c147
 	Ipp64f tau = .5;
-	Ipp64f final = 10;
+	Ipp64f final = 8;
 	long steps = 500;
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
@@ -49,6 +58,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *DOS = new Ipp64f[nPoints];
 	Ipp64f *ones = new Ipp64f[nPoints];//for inverting
 	ippsSet_64f(1, ones, nPoints);
+	Ipp64f *taus = new Ipp64f[nPoints];//phi dependent taus
 
 	Ipp64f *vx = new Ipp64f[nPoints];
 	Ipp64f *vy = new Ipp64f[nPoints];
@@ -85,6 +95,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		output[2 * nPoints + j] = starts[j * 3 + 2];
 	}
 
+
+
 	/*argx[0] = 1;
 	argy[0] = 2;
 	argz[0] = 1;
@@ -102,6 +114,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		field[1] = 0;
 		field[2] = field45 * cos(thetas[th]);
 
+
+
 		for (int i = 1; i < steps; i++) {
 
 			ippsCopy_64f(&output[nPoints * (3 * (i - 1) + 0)], argx, nPoints);//copy arguments for k1;
@@ -111,6 +125,13 @@ int _tmain(int argc, _TCHAR* argv[])
 			veloY(params, argx, argy, argz, nPoints, tempy, vy);
 			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			ippsCopy_64f(vz, &vzStorage[nPoints * (i - 1)], nPoints);//store vz for conductivity later
+						
+			/*for (int z = 0; z < nPoints; z++) {
+				if (th == 1 && i == 1) {
+					cout << setprecision(20)<< argx[z] << " " << endl;
+				}
+			}*/
+			
 
 			fx(field, vy, vz, nPoints, tempx, k1x); //calculate evolution in k and store in k1
 			fy(field, vx, vz, nPoints, tempy, k1y);
@@ -183,6 +204,7 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(&output[nPoints * (3 * (i - 1) + 2)], tempz, &output[nPoints * (3 * i + 2)], nPoints);
 		}
 
+		
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 0)], argx, nPoints);//get velocity for last point
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 1)], argy, nPoints);
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 2)], argz, nPoints);
@@ -206,14 +228,36 @@ int _tmain(int argc, _TCHAR* argv[])
 		ippsDiv_64f(tempx, ones, DOS, nPoints);
 
 		ippsDivC_64f_I(tau, times, steps);//exponential stuff, negative tau is taken care of in time
+
 		ippsExp_64f_I(times, steps);
 		ippsMulC_64f_I((1E-12)*h, times, steps);
 
 		ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
 		for (int i = 0; i < steps; i++) {
+		
+			//taufun(params, &output[nPoints*(i + 0)], &output[nPoints*(i + 1)], nPoints, tempx, taus);
+			//
+			//ippsInv_64f_A50(taus, tempx, nPoints);
+			//ippsMulC_64f_I(times[i], tempx, nPoints);
+			//
+			//ippsExp_64f_I(tempx, nPoints);
+
+			//
+
+			//ippsMulC_64f_I((1E-12)*h, tempx, nPoints);
+
+			//ippsMulC_64f_I(tempx[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+			//
+			
 			ippsMulC_64f_I(times[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+			for (int j = 0; j < nPoints; j++) {
+				if (i == 1 && th == 0) {
+					cout << times[j] << endl;
+				}
+			}
 		}
+		
 
 		for (int i = 0; i < (steps - 1); i++) {
 			ippsAdd_64f_I(&vzStorage[i*nPoints], &vzStorage[(i + 1)*nPoints], nPoints); //add all and accumulate in last vector
@@ -226,6 +270,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		condout[th] = total;
 	}
+
+
 
 	duration = (std::clock() - startT) / (Ipp64f)CLOCKS_PER_SEC;
 	cout << "time: " << duration << endl;
@@ -341,7 +387,7 @@ int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[8 * length], &temp[3 * length], &temp[10 * length], length);//cos ky/2 * sin ky
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
-	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
+	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky CHECK SIGN
 	ippsMulC_64f(&temp[11 * length], 65893, &temp[12 * length], length);//mult by constant
 	ippsMul_64f(&temp[7 * length], &temp[12 * length], &temp[13 * length], length);// mult by sin kx/2
 	ippsSub_64f(&temp[10 * length], &temp[13 * length], temp, length);//add those two together (neg sign)	
@@ -433,3 +479,20 @@ int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f 
 	return 0;
 }
 
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out) {
+	ippsDiv_64f(kx, ky, temp, length); //ky div kx, but check order!
+	ippsAtan_64f_A50(temp, &temp[length], length); // arctan of that
+	vdSin(length, &temp[length], &temp[2 * length]); // sin of arg
+	ippsSqr_64f_I(&temp[2 * length], length); // square of sin
+	vdCos(length, &temp[length], &temp[3 * length]); // cos of arc
+	ippsSqr_64f_I(&temp[3 * length], length); // square of cos
+	ippsSub_64f(&temp[3 * length], &temp[2 * length], &temp[4 * length], length);  //sin minus cos, but check sign
+	ippsPowx_64f_A50(&temp[4 * length], params[9 - 1], &temp[5 * length],length); //raise to some fancy power
+	ippsMulC_64f_I(params[8 - 1], &temp[5 * length], length); // multiply by a scaling factor
+	ippsAddC_64f_I(1 / params[1 - 1], &temp[5 * length], length); // add to background scattering rate
+	ippsInv_64f_A50(&temp[5 * length], &temp[6 * length], length); // invert the whole thing to get tau (do we need this...no?)
+	ippsCopy_64f(&temp[6 * length], out, length);
+
+
+	return 0;
+}
