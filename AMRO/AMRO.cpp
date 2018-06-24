@@ -19,23 +19,16 @@ int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-<<<<<<< HEAD
-
 	//Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
 	Ipp64f thetas[91] = {0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159};
 	int Nthetas = 91;
-	Ipp64f params[9] = {.5, 475, 525, -60, 17, 9, .5, 1, 8 };
+	Ipp64f params[9] = {.5, 475, 525, -60, 17, 9, .5, 14, 8 };
 
 
-	Ipp64f *condout = new Ipp64f[46];
-=======
-	Ipp64f thetas[91] = { 0.,0.0349066,0.0698132,0.10472,0.139626,0.174533,0.20944,0.244346,0.279253,0.314159,0.349066,0.383972,0.418879,0.453786,0.488692,0.523599,0.558505,0.593412,0.628319,0.663225,0.698132,0.733038,0.767945,0.802851,0.837758,0.872665,0.907571,0.942478,0.977384,1.01229,1.0472,1.0821,1.11701,1.15192,1.18682,1.22173,1.25664,1.29154,1.32645,1.36136,1.39626,1.43117,1.46608,1.50098,1.53589,1.5708,1.6057,1.64061,1.67552,1.71042,1.74533,1.78024,1.81514,1.85005,1.88496,1.91986,1.95477,1.98968,2.02458,2.05949,2.0944,2.1293,2.16421,2.19911,2.23402,2.26893,2.30383,2.33874,2.37365,2.40855,2.44346,2.47837,2.51327,2.54818,2.58309,2.61799,2.6529,2.68781,2.72271,2.75762,2.79253,2.82743,2.86234,2.89725,2.93215,2.96706,3.00197,3.03687,3.07178,3.10669,3.14159 };
-	Ipp64f params[9] = {.5, 475, 525, -60, 16, 9, .5, 14, 8 };
-	int Nthetas = 91;
 	Ipp64f *condout = new Ipp64f[Nthetas];
->>>>>>> 4eef1d41d073f4ceb0d6f4ce6c7bb2d8b989c147
+
 	Ipp64f tau = .5;
-	Ipp64f final = 8;
+	Ipp64f final = 4;
 	long steps = 500;
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
@@ -227,36 +220,34 @@ int _tmain(int argc, _TCHAR* argv[])
 		ippsSqrt_64f_I(tempx, nPoints);//square root
 		ippsDiv_64f(tempx, ones, DOS, nPoints);
 
-		ippsDivC_64f_I(tau, times, steps);//exponential stuff, negative tau is taken care of in time
+		//ippsDivC_64f_I(tau, times, steps);//exponential stuff, negative tau is taken care of in time
+		//ippsExp_64f_I(times, steps);
+		//ippsMulC_64f_I((1E-12)*h, times, steps);
+		//ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
-		ippsExp_64f_I(times, steps);
-		ippsMulC_64f_I((1E-12)*h, times, steps);
+		//for (int i = 0; i < steps; i++) {
+		//	ippsMulC_64f_I(times[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+		//}
 
+		
 		ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
-		for (int i = 0; i < steps; i++) {
-		
-			//taufun(params, &output[nPoints*(i + 0)], &output[nPoints*(i + 1)], nPoints, tempx, taus);
-			//
-			//ippsInv_64f_A50(taus, tempx, nPoints);
-			//ippsMulC_64f_I(times[i], tempx, nPoints);
-			//
-			//ippsExp_64f_I(tempx, nPoints);
-
-			//
-
-			//ippsMulC_64f_I((1E-12)*h, tempx, nPoints);
-
-			//ippsMulC_64f_I(tempx[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
-			//
-			
-			ippsMulC_64f_I(times[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
-			for (int j = 0; j < nPoints; j++) {
+		for (int i = 0; i < steps; i++) { //this version uses the phi dependent tau, commented version above uses fixed tau.
+			taufun(params, &output[nPoints*(3*i + 0)], &output[nPoints*(3*i + 1)], nPoints, tempx, taus);
+			ippsInv_64f_A50(taus, tempx, nPoints);			
+			ippsMulC_64f_I(times[i], tempx, nPoints);					
+			ippsExp_64f_I(tempx, nPoints);
+			ippsMulC_64f_I((1E-12)*h, tempx, nPoints);
+		/*	for (int j = 0; j < nPoints; j++) {
 				if (i == 1 && th == 0) {
-					cout << times[j] << endl;
+					cout << tempx[j] << endl;
 				}
-			}
+			}*/
+			ippsMul_64f_I(tempx, &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
+			
 		}
+
+
 		
 
 		for (int i = 0; i < (steps - 1); i++) {
