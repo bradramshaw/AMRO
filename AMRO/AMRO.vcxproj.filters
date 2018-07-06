@@ -27,6 +27,9 @@
     <ClInclude Include="ArrayAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FindFermi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -41,5 +44,13 @@
     <ClCompile Include="AMRO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FindFermi.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="start.dat">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

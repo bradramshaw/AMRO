@@ -14,33 +14,36 @@ int fx(Ipp64f * field, Ipp64f *vy, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f 
 int fy(Ipp64f * field, Ipp64f *vx, Ipp64f *vz, int length, Ipp64f *temp, Ipp64f *out);
 int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f *out);
 
-int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out);
-
+//int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out);
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out, Ipp64f *one);
 int _tmain(int argc, _TCHAR* argv[])
 {
+	const int numthetas = 91;
+	//Ipp64f thetas[numthetas] = {0,3.1415926 };
 
-	//Ipp64f thetas[46] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786,	0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708 };
-	Ipp64f thetas[91] = {0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159};
-	int Nthetas = 91;
-	Ipp64f params[9] = {.5, 475, 525, -60, 17, 9, .5, 14, 8 };
-
-
-	Ipp64f *condout = new Ipp64f[Nthetas];
-
+	//Ipp64f thetas[1] = { 0 };
+	Ipp64f thetas[91] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159 };
+	Ipp64f params[9] = { .056, 475, 525, -60, 16, 9, .5, 14, 8 };
+	
+	Ipp64f *condout = new Ipp64f[numthetas];
+	//Ipp64f*condout = new Ipp64f[46];
 	Ipp64f tau = .5;
+	//Ipp64f final = 10* params[0];//time final?
 	Ipp64f final = 4;
-	long steps = 500;
+	long steps = 500;//number of time steps?
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
+	FindFermi Fermi("start.dat", params);
+	//DataExtractor extractor("starts.dat");
+	//Ipp64f * starts = extractor.getDataArray();
+	//int nPoints = floor((extractor.getNumberOfLines()) / 3);//x,y,z coordinates?
 
-	DataExtractor extractor("starts.dat");
-	Ipp64f * starts = extractor.getDataArray();
-	int nPoints = floor((extractor.getNumberOfLines()) / 3);
-
+	int nPoints = Fermi.nPoints;
+	cout << nPoints << endl;
+	Ipp64f *starts = new Ipp64f[nPoints * 3];
+	Fermi.ReturnStart(starts);
 	Ipp64f *output = new Ipp64f[nPoints*steps * 3]; //stores evolution of orbit around Fermi surface
-
-
-	Ipp64f *times = new Ipp64f[steps]; //time steps
+	Ipp64f *times = new Ipp64f[steps * nPoints]; //time steps
 
 	std::clock_t startT;
 	Ipp64f duration;
@@ -65,6 +68,8 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *tempy = new Ipp64f[16 * nPoints];
 	Ipp64f *tempz = new Ipp64f[16 * nPoints];
 
+
+
 	Ipp64f *k1x = new Ipp64f[nPoints];
 	Ipp64f *k1y = new Ipp64f[nPoints];
 	Ipp64f *k1z = new Ipp64f[nPoints];
@@ -76,7 +81,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f *k3z = new Ipp64f[nPoints];
 	Ipp64f *k4x = new Ipp64f[nPoints];
 	Ipp64f *k4y = new Ipp64f[nPoints];
-	Ipp64f *k4z = new Ipp64f[nPoints];
+	Ipp64f *k4z = new Ipp64f[nPoints];//what are these? why do we need k1-4?
 
 	Ipp64f total = 0;
 
@@ -95,18 +100,23 @@ int _tmain(int argc, _TCHAR* argv[])
 	argz[0] = 1;
 	veloZ(params, argx, argy, argz, 1, tempz, vz);
 	cout << vz[0] << endl;
-*/
-	for (int th = 0; th < Nthetas; th++) {
+	*/
+	for (int th = 0; th <numthetas; th++) {
 
 		for (int p = 0; p < steps; p++) { //re-initialize times SLOW STEP CREATE TEMP VARIABLE
-			times[p] = -p;
+			//times[p] = -p;//why -p?
+			ippsSet_64f(-p, &times[nPoints * p],nPoints);
 		}
-		ippsMulC_64f_I(h, times, steps);
+		ippsMulC_64f_I(h, times, steps*nPoints);//time stamps
 
-		field[0] = field45 * sin(thetas[th]);  //set field
+		field[0] = field45 * sin(thetas[th]);  //set field(phi == 0?)
 		field[1] = 0;
 		field[2] = field45 * cos(thetas[th]);
-
+		//for (int z = 0; z < nPoints; z++) {
+		//	if (th == 0 ) {
+		//		cout << setprecision(20) << times[nPoints*2 + z] << " " << endl;
+		//	}
+		//}
 
 
 		for (int i = 1; i < steps; i++) {
@@ -118,13 +128,25 @@ int _tmain(int argc, _TCHAR* argv[])
 			veloY(params, argx, argy, argz, nPoints, tempy, vy);
 			veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 			ippsCopy_64f(vz, &vzStorage[nPoints * (i - 1)], nPoints);//store vz for conductivity later
-						
-			/*for (int z = 0; z < nPoints; z++) {
-				if (th == 1 && i == 1) {
-					cout << setprecision(20)<< argx[z] << " " << endl;
-				}
-			}*/
 			
+			taufun(params, argx, argy, nPoints, tempx, taus,ones);// calculate k dependent tau
+			ippsDiv_64f_I(taus, &times[nPoints * (i-1)], nPoints);
+			//ippsDivC_64f_I(tau, &times[nPoints * (i - 1)], nPoints);
+			ippsExp_64f_I(&times[nPoints * (i-1)], nPoints);
+			ippsMulC_64f_I((1E-12) * h, &times[nPoints * (i-1)], nPoints);
+			
+			//taufun(params, argx, argy, nPoints, tempx, taus);
+			//for (int z = 0; z < nPoints; z++) {
+			//	if (th == 0 && i == 30) {
+			//		cout << setprecision(20) << taus[z] << " " << endl;
+			//	}
+			//}
+			/*for (int z = 0; z < nPoints; z++) {
+			if (th == 1 && i == 1) {
+			cout << setprecision(20)<< argx[z] << " " << endl;
+			}
+			}*/
+
 
 			fx(field, vy, vz, nPoints, tempx, k1x); //calculate evolution in k and store in k1
 			fy(field, vx, vz, nPoints, tempy, k1y);
@@ -197,12 +219,18 @@ int _tmain(int argc, _TCHAR* argv[])
 			ippsAdd_64f(&output[nPoints * (3 * (i - 1) + 2)], tempz, &output[nPoints * (3 * i + 2)], nPoints);
 		}
 
-		
+
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 0)], argx, nPoints);//get velocity for last point
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 1)], argy, nPoints);
 		ippsCopy_64f(&output[nPoints * (3 * (steps - 1) + 2)], argz, nPoints);
 		veloZ(params, argx, argy, argz, nPoints, tempz, vz);
 		ippsCopy_64f(vz, &vzStorage[nPoints * (steps - 1)], nPoints);
+
+		taufun(params, argx, argy, nPoints, tempx, taus, ones);// calculate k dependent tau for last point
+		ippsDiv_64f_I(taus, &times[nPoints * (steps - 1)], nPoints);
+		//ippsDivC_64f_I(tau, &times[nPoints * (steps - 1)], nPoints);
+		ippsExp_64f_I(&times[nPoints * (steps - 1)], nPoints);
+		ippsMulC_64f_I((1E-12)*h, &times[nPoints * (steps - 1)], nPoints);
 
 		ippsCopy_64f(&output[nPoints * (0)], argx, nPoints);//initial velocities for DOS calc;
 		ippsCopy_64f(&output[nPoints * (1)], argy, nPoints);
@@ -220,35 +248,16 @@ int _tmain(int argc, _TCHAR* argv[])
 		ippsSqrt_64f_I(tempx, nPoints);//square root
 		ippsDiv_64f(tempx, ones, DOS, nPoints);
 
-		//ippsDivC_64f_I(tau, times, steps);//exponential stuff, negative tau is taken care of in time
+	  //need to change!!
+		//ippsDiv_64f_I(taus, times, steps);//exponential stuff, negative tau is taken care of in time
 		//ippsExp_64f_I(times, steps);
 		//ippsMulC_64f_I((1E-12)*h, times, steps);
-		//ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
-		//for (int i = 0; i < steps; i++) {
-		//	ippsMulC_64f_I(times[i], &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
-		//}
-
-		
 		ippsCopy_64f(&vzStorage[0], vz0Storage, nPoints);//save initial velocity before exp
 
-		for (int i = 0; i < steps; i++) { //this version uses the phi dependent tau, commented version above uses fixed tau.
-			taufun(params, &output[nPoints*(3*i + 0)], &output[nPoints*(3*i + 1)], nPoints, tempx, taus);
-			ippsInv_64f_A50(taus, tempx, nPoints);			
-			ippsMulC_64f_I(times[i], tempx, nPoints);					
-			ippsExp_64f_I(tempx, nPoints);
-			ippsMulC_64f_I((1E-12)*h, tempx, nPoints);
-		/*	for (int j = 0; j < nPoints; j++) {
-				if (i == 1 && th == 0) {
-					cout << tempx[j] << endl;
-				}
-			}*/
-			ippsMul_64f_I(tempx, &vzStorage[i*nPoints], nPoints); //multiply velocities by exp time factor
-			
+		for (int i = 0; i < steps; i++) {
+			ippsMul_64f_I(&times[i * nPoints], &vzStorage[i * nPoints], nPoints); //multiply velocities by exp time factor
 		}
-
-
-		
 
 		for (int i = 0; i < (steps - 1); i++) {
 			ippsAdd_64f_I(&vzStorage[i*nPoints], &vzStorage[(i + 1)*nPoints], nPoints); //add all and accumulate in last vector
@@ -269,14 +278,30 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	ofstream fout;
 	fout.open("conductivity.dat");
-	fout.precision(15);
+	fout.precision(20);
 
-	for (int i = 0; i < Nthetas; i++) {
+	for (int i = 0; i < numthetas; i++) {
 
-		fout << thetas[i] << "\t" << condout[i] << endl;
+		fout << thetas[i] << '\t' << condout[i] << endl;
+		//fout <<  condout[i] << endl;
+		//cout << thetas[i] << "\t" << condout[i] << endl;
 	}
 
 	fout.close();
+	//fout.open("Fermitraject.dat");
+	//fout.precision(15);
+	//cout << nPoints << endl;
+	//for (int i = 1; i <steps; i++) {
+
+	//	fout << output[nPoints * (3 * (i) + 0)] <<'\t'<< output[nPoints * (3 * (i) + 1)] <<'\t'<< output[nPoints * (3 * (i) + 2)] << endl;
+		//cout << thetas[i] << "\t" << condout[i] << endl;
+	//}
+
+	//fout.close();
+	//for (int i = 0; i < steps; ++i) {
+	//	cout << times[i] << " " << endl;
+	//}
+	cout << "end"<<endl;
 
 	/*ofstream fout2;
 	fout2.open("vztimes.dat");
@@ -294,10 +319,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 
 	delete[] output;
+
+
+	while (true);
 	return 0;
 }
 
-int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
+int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out)
+{
 	ippsMulC_64f(kx, 3.74767, temp, length); //term for sin(kx), param3
 	vdSin(length, temp, &temp[1 * length]);
 	ippsMulC_64f(&temp[1 * length], params[3 - 1] * 11.4215, out, length);
@@ -307,24 +336,24 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767, temp, length);
 	vdCos(length, temp, &temp[2 * length]);
 	ippsMul_64f_I(&temp[1 * length], &temp[2 * length], length);
-	ippsMulC_64f(&temp[2 * length], 22.8429*params[4-1], temp, length);
+	ippsMulC_64f(&temp[2 * length], 22.8429*params[4 - 1], temp, length);
 	ippsAdd_64f_I(temp, out, length);
 
-	ippsMulC_64f(kx, 2*3.74767, temp, length); //term for sin(2 kx), param5
+	ippsMulC_64f(kx, 2 * 3.74767, temp, length); //term for sin(2 kx), param5
 	vdSin(length, temp, &temp[1 * length]);
-	ippsMulC_64f(&temp[1 * length], params[5 - 1] * 11.4215*2, temp, length);
+	ippsMulC_64f(&temp[1 * length], params[5 - 1] * 11.4215 * 2, temp, length);
 	ippsAdd_64f_I(temp, out, length);
 
-	ippsMulC_64f(kx,  3.74767, temp, length); //term for long complicated kz term, param6
+	ippsMulC_64f(kx, 3.74767, temp, length); //term for long complicated kz term, param6
 	vdSin(length, temp, &temp[1 * length]); // sin kx
 	vdCos(length, temp, &temp[2 * length]); // cos kx
-	ippsMulC_64f(ky, 3.74767, temp, length); 
+	ippsMulC_64f(ky, 3.74767, temp, length);
 	vdSin(length, temp, &temp[3 * length]); // sin ky
 	vdCos(length, temp, &temp[4 * length]); // cos ky
-	ippsMulC_64f(kx, 3.74767/2, temp, length); 
+	ippsMulC_64f(kx, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[5 * length]); // sin kx/2
 	vdCos(length, temp, &temp[6 * length]); // cos kx/2
-	ippsMulC_64f(ky, 3.74767/2, temp, length);
+	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[7 * length]); // sin ky/2
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
 	ippsMulC_64f(kz, 3.3, temp, length);
@@ -332,7 +361,7 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMul_64f(&temp[6 * length], &temp[1 * length], &temp[10 * length], length);//cos kx/2 * sin kx
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
 	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
-	ippsMulC_64f(&temp[11 * length],65893, &temp[12 * length], length);//mult by constant
+	ippsMulC_64f(&temp[11 * length], 65893, &temp[12 * length], length);//mult by constant
 	ippsMul_64f(&temp[5 * length], &temp[12 * length], &temp[13 * length], length);// mult by sin kx/2
 	ippsAdd_64f(&temp[13 * length], &temp[10 * length], temp, length);//add those two together
 	ippsMul_64f_I(&temp[9 * length], temp, length);//mult by cos kz/2
@@ -343,6 +372,7 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 
 	return 0;
 }
+
 
 int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f *temp, Ipp64f *out) {
 	ippsMulC_64f(ky, 3.74767, temp, length); //term for sin(ky), param3
@@ -407,7 +437,8 @@ int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMul_64f_I(&temp[8 * length], &temp[11 * length], length);// times cos ky/2
 	ippsMul_64f_I(&temp[6 * length], &temp[11 * length], length);// times cos ky/2
 	ippsMulC_64f(&temp[11 * length],params[6 - 1] * 10.0571,out, length);
-
+	ippsMulC_64f(&temp[9 * length], -params[7 - 1] * 10.0571, &temp[12 * length], length);//h7 term
+	ippsAdd_64f_I(&temp[12 * length], out, length);
 
 	return 0;
 }
@@ -470,19 +501,45 @@ int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f 
 	return 0;
 }
 
-int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out) {
-	ippsDiv_64f(kx, ky, temp, length); //ky div kx, but check order!
-	ippsAtan_64f_A50(temp, &temp[length], length); // arctan of that
-	vdSin(length, &temp[length], &temp[2 * length]); // sin of arg
-	ippsSqr_64f_I(&temp[2 * length], length); // square of sin
-	vdCos(length, &temp[length], &temp[3 * length]); // cos of arc
-	ippsSqr_64f_I(&temp[3 * length], length); // square of cos
-	ippsSub_64f(&temp[3 * length], &temp[2 * length], &temp[4 * length], length);  //sin minus cos, but check sign
-	ippsPowx_64f_A50(&temp[4 * length], params[9 - 1], &temp[5 * length],length); //raise to some fancy power
-	ippsMulC_64f_I(params[8 - 1], &temp[5 * length], length); // multiply by a scaling factor
-	ippsAddC_64f_I(1 / params[1 - 1], &temp[5 * length], length); // add to background scattering rate
-	ippsInv_64f_A50(&temp[5 * length], &temp[6 * length], length); // invert the whole thing to get tau (do we need this...no?)
-	ippsCopy_64f(&temp[6 * length], out, length);
+//int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out) {
+//	ippsDiv_64f(kx, ky, temp, length);
+//	ippsAtan_64f_A50(temp, &temp[length], length);
+//	vdSin(length, &temp[length], &temp[2 * length]);
+//	ippsSqr_64f_I(&temp[2 * length], length);
+//	vdCos(length, &temp[length], &temp[3 * length]);
+//	ippsSqr_64f_I(&temp[3 * length], length);
+//	ippsSub_64f(&temp[3 * length], &temp[2 * length], &temp[4 * length], length);
+
+//	ippsCopy_64f(&temp[4 * length], out, length);
+
+
+//	return 0;
+//}
+int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out, Ipp64f *ones) {
+	ippsDiv_64f(kx, ky, temp, length);
+	//cout << temp[0] << endl;
+	ippsAtan_64f_A50(temp, &temp[length], length);
+	vdSin(length, &temp[length], &temp[2 * length]);//sin(arctan(ky/kx))
+	ippsSqr_64f_I(&temp[2 * length], length);
+	vdCos(length, &temp[length], &temp[3 * length]);//cos(arctan(ky/kx))
+	ippsSqr_64f_I(&temp[3 * length], length);
+	ippsSub_64f(&temp[2 * length], &temp[3 * length], &temp[4 * length], length);//sin(arctan(ky/kx))^2-cos(arctan(ky/kx))^2
+	//cout << temp[2 * length] << endl;
+	ippsPowx_64f_A50(&temp[4 * length], params[9-1], &temp[5 * length], length);
+	//cout << temp[5 * length] << endl;
+	ippsMulC_64f_I(params[8-1], &temp[5 * length],length);
+	//cout << temp[5 * length] << endl;
+	ippsAddC_64f_I(1/params[1-1], &temp[5 * length], length);
+	//cout << temp[5 * length] << endl;
+	
+	//cout << temp[6 * length] << endl;
+	
+	
+	ippsDiv_64f(&temp[5 * length], ones, out, length);
+	//cout << temp[6 * length] << endl;
+	
+
+	
 
 
 	return 0;

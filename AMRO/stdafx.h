@@ -24,7 +24,7 @@
 #include "mkl_vsl.h"
 #include "mkl_vsl_functions.h"
 #include "mkl_lapacke.h"
-
+#include "FindFermi.h"
 
 
 // TODO: reference additional headers your program requires here
