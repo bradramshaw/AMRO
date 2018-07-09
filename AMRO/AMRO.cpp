@@ -18,25 +18,32 @@ int fz(Ipp64f * field, Ipp64f *vx, Ipp64f *vy, int length, Ipp64f *temp, Ipp64f 
 int taufun(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, int length, Ipp64f *temp, Ipp64f *out, Ipp64f *one);
 int _tmain(int argc, _TCHAR* argv[])
 {
-	const int numthetas = 91;
 	//Ipp64f thetas[numthetas] = {0,3.1415926 };
 
 	//Ipp64f thetas[1] = { 0 };
-	Ipp64f thetas[91] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159 };
-	Ipp64f params[9] = { .056, 475, 525, -60, 16, 9, .5, 14, 8 };
+	//const int numthetas = 91;
+	//Ipp64f thetas[91] = { 0., 0.0349066, 0.0698132, 0.10472, 0.139626, 0.174533, 0.20944, 0.244346, 0.279253, 0.314159, 0.349066, 0.383972, 0.418879, 0.453786, 0.488692, 0.523599, 0.558505, 0.593412, 0.628319, 0.663225, 0.698132, 0.733038, 0.767945, 0.802851, 0.837758, 0.872665, 0.907571, 0.942478, 0.977384, 1.01229, 1.0472, 1.0821, 1.11701, 1.15192, 1.18682, 1.22173, 1.25664, 1.29154, 1.32645, 1.36136, 1.39626, 1.43117, 1.46608, 1.50098, 1.53589, 1.5708, 1.6057, 1.64061, 1.67552, 1.71042, 1.74533, 1.78024, 1.81514, 1.85005, 1.88496, 1.91986, 1.95477, 1.98968, 2.02458, 2.05949, 2.0944, 2.1293, 2.16421, 2.19911, 2.23402, 2.26893, 2.30383, 2.33874, 2.37365, 2.40855, 2.44346, 2.47837, 2.51327, 2.54818, 2.58309, 2.61799, 2.6529, 2.68781, 2.72271, 2.75762, 2.79253, 2.82743, 2.86234, 2.89725, 2.93215, 2.96706, 3.00197, 3.03687, 3.07178, 3.10669, 3.14159 };
+	//Ipp64f params[9] = { .056, 475, 525, -60, 16, 9, .5, 14, 8 };
 	
+	const int numthetas = 31;
+	Ipp64f thetas[31] = { 0.,0.0581776,0.116355,0.174533,0.232711,0.290888,0.349066,0.407243,0.465421,0.523599,0.581776,0.639954,0.698132,0.756309,0.814487,0.872665,0.930842,0.98902,1.0472,1.10538,1.16355,1.22173,1.27991,1.33809,1.39626,1.45444,1.51262,1.5708,1.62897,1.68715,1.74533 };
+
 	Ipp64f *condout = new Ipp64f[numthetas];
 	//Ipp64f*condout = new Ipp64f[46];
-	Ipp64f tau = .5;
+	//Ipp64f tau = .5;
 	//Ipp64f final = 10* params[0];//time final?
 	Ipp64f final = 4;
 	long steps = 500;//number of time steps?
 	Ipp64f h = final / steps;
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
-	FindFermi Fermi("start.dat", params);
-	//DataExtractor extractor("starts.dat");
-	//Ipp64f * starts = extractor.getDataArray();
-	//int nPoints = floor((extractor.getNumberOfLines()) / 3);//x,y,z coordinates?
+
+	Ipp64f *params = new Ipp64f[10]; //last parameter is phi
+	DataExtractor extractor("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/params.dat");
+	params = extractor.getDataArray();
+
+	FindFermi Fermi("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/start.dat", params);
+	
+
 
 	int nPoints = Fermi.nPoints;
 	cout << nPoints << endl;
@@ -109,8 +116,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		}
 		ippsMulC_64f_I(h, times, steps*nPoints);//time stamps
 
-		field[0] = field45 * sin(thetas[th]);  //set field(phi == 0?)
-		field[1] = 0;
+		field[0] = field45 * sin(thetas[th]) * cos(params[9]);  //set field(phi == 0?)
+		field[1] = field45 * sin(thetas[th]) * sin(params[9]);
 		field[2] = field45 * cos(thetas[th]);
 		//for (int z = 0; z < nPoints; z++) {
 		//	if (th == 0 ) {
