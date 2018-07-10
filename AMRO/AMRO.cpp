@@ -38,10 +38,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
 
 	Ipp64f *params = new Ipp64f[10]; //last parameter is phi
-	DataExtractor extractor("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/params.dat");
+	DataExtractor extractor("params.dat");
 	params = extractor.getDataArray();
 
-	FindFermi Fermi("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/start.dat", params);
+	FindFermi Fermi("start.dat", params);
 	
 
 
@@ -321,14 +321,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	fout2.close();*/
 
-	char a;
+	/*char a;
 	cin >> a;
 
 
 	delete[] output;
 
 
-	while (true);
+	while (true);*/
 	return 0;
 }
 
