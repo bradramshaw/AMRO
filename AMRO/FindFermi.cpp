@@ -86,7 +86,7 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 	vdCos(nPoints, theta, argCos);
 	ippsMulC_64f(kz, 6.6, argkz, nPoints);
 	cout << "parameter: ";
-	for (int i = 0; i < 9; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		cout << params[i] << ", ";
 	}
 	cout << endl;
@@ -94,7 +94,7 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 
 int FindFermi::UpdatePar(Ipp64f * param)
 {
-	for (int i = 0; i < 9; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		params[i] = param[i];
 	}
 
@@ -104,7 +104,7 @@ int FindFermi::UpdatePar(Ipp64f * param)
 int FindFermi::PrintPar()
 {
 	cout << "parameter: ";
-	for (int i = 0; i < 9; ++i) {
+	for (int i = 0; i < 10; ++i) {
 		cout << params[i] <<", ";
 	}
 	cout << endl;

@@ -321,14 +321,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
 	fout2.close();*/
 
-	char a;
+	/*char a;
 	cin >> a;
 
 
 	delete[] output;
 
 
-	while (true);
+	while (true);*/
 	return 0;
 }
 
