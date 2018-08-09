@@ -38,10 +38,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
 
 	Ipp64f *params = new Ipp64f[10]; //last parameter is phi
-	DataExtractor extractor("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/params.dat");
+	DataExtractor extractor("params.dat");
 	params = extractor.getDataArray();
 
-	FindFermi Fermi("E:/Dropbox/Experiments/Nd_LSCO_AMR/Mathematica_notebooks/start.dat", params);
+	FindFermi Fermi("start.dat", params);
 	
 
 
@@ -363,7 +363,7 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[7 * length]); // sin ky/2
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
+	ippsMulC_64f(kz, 6.6, temp, length);
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[6 * length], &temp[1 * length], &temp[10 * length], length);//cos kx/2 * sin kx
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
@@ -411,7 +411,7 @@ int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[7 * length]); // sin ky/2
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
+	ippsMulC_64f(kz, 6.6, temp, length);
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[8 * length], &temp[3 * length], &temp[10 * length], length);//cos ky/2 * sin ky
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
@@ -436,7 +436,7 @@ int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	vdCos(length, temp, &temp[6 * length]); // cos kx/2
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
+	ippsMulC_64f(kz, 6.6, temp, length);
 	vdSin(length, temp, &temp[9 * length]); // sin kz/2
 	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
 	ippsSqr_64f_I(&temp[11 * length], length);//square it

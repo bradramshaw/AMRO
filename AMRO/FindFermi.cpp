@@ -84,7 +84,7 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 	}
 	vdSin(nPoints, theta, argSin);
 	vdCos(nPoints, theta, argCos);
-	ippsMulC_64f(kz, 3.3, argkz, nPoints);
+	ippsMulC_64f(kz, 6.6, argkz, nPoints);
 	cout << "parameter: ";
 	for (int i = 0; i < 9; ++i) {
 		cout << params[i] << ", ";
