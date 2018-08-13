@@ -32,15 +32,15 @@ int _tmain(int argc, _TCHAR* argv[])
 	//Ipp64f*condout = new Ipp64f[46];
 	//Ipp64f tau = .5;
 	//Ipp64f final = 10* params[0];//time final?
-	Ipp64f final = 4;
-	long steps = 500;//number of time steps?
-	Ipp64f h = final / steps;
+	
 	Ipp64f field45 = 7.91209; // 45 tesla in appropriate units
 
 	Ipp64f *params = new Ipp64f[10]; //last parameter is phi
 	DataExtractor extractor("params.dat");
 	params = extractor.getDataArray();
-
+	Ipp64f final = 8 * params[1 - 1];
+	long steps = 500;//number of time steps?
+	Ipp64f h = final / steps;
 	FindFermi Fermi("start.dat", params);
 	
 
@@ -437,16 +437,20 @@ int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	vdCos(length, temp, &temp[6 * length]); // cos kx/2
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
-	vdSin(length, temp, &temp[9 * length]); // sin kz/2
+	ippsMulC_64f(kz, 6.6, temp, length);
+	vdSin(length, temp, &temp[9 * length]); // sin kz/2c
+	ippsMulC_64f(kz, 13.2, temp, length);
+	vdSin(length, temp, &temp[13 * length]);// sin kzc
+
 	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
 	ippsSqr_64f_I(&temp[11 * length], length);//square it
 	ippsMul_64f_I(&temp[9 * length], &temp[11 * length], length);// times sin kz/2
 	ippsMul_64f_I(&temp[8 * length], &temp[11 * length], length);// times cos ky/2
 	ippsMul_64f_I(&temp[6 * length], &temp[11 * length], length);// times cos ky/2
-	ippsMulC_64f(&temp[11 * length],params[6 - 1] * 10.0571,out, length);
-	ippsMulC_64f(&temp[9 * length], -params[7 - 1] * 10.0571, &temp[12 * length], length);//h7 term
+	ippsMulC_64f(&temp[11 * length], params[6 - 1] * 10.0571, out, length);
+	ippsMulC_64f(&temp[13 * length], params[7 - 1] * 10.0571 * 2, &temp[12 * length], length);//h7 term
 	ippsAdd_64f_I(&temp[12 * length], out, length);
+
 
 	return 0;
 }

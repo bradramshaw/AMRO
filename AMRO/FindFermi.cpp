@@ -24,7 +24,9 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 	ippsMulC_64f(argSin, 3.747665940 * 2, temp, length);
 	ippsMul_64f_I(r, temp, length);
 	vdCos(length, temp, &temp[6 * length]); // cos 2 sin
-	vdCos(length, argkz, &temp[7 * length]); // cos kz/2
+	ippsMulC_64f(argkz, 0.5, &temp[8 * length], length); //kzc / 2
+	vdCos(length, &temp[8 * length], &temp[7 * length]); // cos kzc/2
+	vdCos(length, argkz, &temp[9 * length]); // cos kzc
 
 	ippsAdd_64f(&temp[5 * length], &temp[6 * length], temp, length);// param 5
 	ippsMulC_64f(temp, -35164.83516*params[5 - 1], out, length);
@@ -43,9 +45,9 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 	ippsMul_64f_I(&temp[4 * length], temp, length); // mult by cos sin/2
 	ippsMul_64f_I(&temp[7 * length], temp, length); // mult by cos  kz/2
 	ippsMulC_64f_I(-35164.83516 * params[6 - 1], temp, length);
-	ippsMulC_64f_I(35164.83516 *params[7 - 1], &temp[7 * length], length);
+	ippsMulC_64f_I(-35164.83516 *params[7 - 1], &temp[9 * length], length);
 	ippsAdd_64f_I(temp, out, length);
-	ippsAdd_64f_I(&temp[7 * length], out, length);
+	ippsAdd_64f_I(&temp[9 * length], out, length);
 
 	return 0;
 }
