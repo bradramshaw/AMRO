@@ -108,6 +108,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	veloZ(params, argx, argy, argz, 1, tempz, vz);
 	cout << vz[0] << endl;
 	*/
+
 	for (int th = 0; th <numthetas; th++) {
 
 		for (int p = 0; p < steps; p++) { //re-initialize times SLOW STEP CREATE TEMP VARIABLE
