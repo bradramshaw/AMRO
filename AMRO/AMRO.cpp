@@ -39,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	DataExtractor extractor("params.dat");
 	params = extractor.getDataArray();
 	Ipp64f final = 8 * params[1 - 1];
-	long steps = 100;//number of time steps?
+	long steps = 500;//number of time steps?
 	Ipp64f h = final / steps;
 	FindFermi Fermi("start.dat", params);
 	
