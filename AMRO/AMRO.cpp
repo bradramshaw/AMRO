@@ -39,7 +39,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	DataExtractor extractor("params.dat");
 	params = extractor.getDataArray();
 	Ipp64f final = 8 * params[1 - 1];
-	long steps = 500;//number of time steps?
+	long steps = 100;//number of time steps?
 	Ipp64f h = final / steps;
 	FindFermi Fermi("start.dat", params);
 	
@@ -364,7 +364,7 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[7 * length]); // sin ky/2
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
+	ippsMulC_64f(kz, 6.6, temp, length);//kz*c/2(c=13.2)
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[6 * length], &temp[1 * length], &temp[10 * length], length);//cos kx/2 * sin kx
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
@@ -376,6 +376,7 @@ int veloX(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMul_64f_I(&temp[11 * length], temp, length);//mult by cos kx - cos ky
 	ippsMul_64f_I(&temp[8 * length], temp, length);//mult by cos ky/2
 	ippsMulC_64f_I(params[6 - 1] * 0.0000866667, temp, length);
+	//ippsMulC_64f_I(params[6 - 1], temp, length);
 	ippsAdd_64f_I(temp, out, length);
 
 	return 0;
@@ -412,7 +413,7 @@ int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdSin(length, temp, &temp[7 * length]); // sin ky/2
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
-	ippsMulC_64f(kz, 3.3, temp, length);
+	ippsMulC_64f(kz, 6.6, temp, length);//kz*c/2(c=13.2)
 	vdCos(length, temp, &temp[9 * length]); // cos kz/2
 	ippsMul_64f(&temp[8 * length], &temp[3 * length], &temp[10 * length], length);//cos ky/2 * sin ky
 	ippsMulC_64f_I(65893 * 4, &temp[10 * length], length); // mult by constant
@@ -424,6 +425,7 @@ int veloY(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMul_64f_I(&temp[11 * length], temp, length);//mult by cos kx - cos ky
 	ippsMul_64f_I(&temp[6 * length], temp, length);//mult by cos kx/2	
 	ippsMulC_64f_I(params[6 - 1] * 0.0000866667, temp, length);
+	//ippsMulC_64f_I(params[6 - 1], temp, length);
 	ippsAdd_64f_I(temp, out, length);
 	return 0;
 }
