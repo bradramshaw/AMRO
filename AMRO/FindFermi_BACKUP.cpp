@@ -26,7 +26,7 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 	vdCos(length, temp, &temp[6 * length]); // cos 2 sin
 	ippsMulC_64f(argkz, 0.5, &temp[8 * length], length); //kzc / 2
 	vdCos(length, &temp[8 * length], &temp[7 * length]); // cos kzc/2
-	vdCos(length, &temp[8 * length], &temp[9 * length]); // cos kzc ***made same as above, cos kzc/2
+	vdCos(length, argkz, &temp[9 * length]); // cos kzc
 
 	ippsAdd_64f(&temp[5 * length], &temp[6 * length], temp, length);// param 5
 	ippsMulC_64f(temp, -35164.83516*params[5 - 1], out, length);
@@ -53,16 +53,16 @@ int FindFermi::func(Ipp64f *params, Ipp64f * argkz, Ipp64f * argCos, Ipp64f * ar
 }
 
 
-FindFermi::FindFermi(std::string name, Ipp64f * param)
+ FindFermi:: FindFermi(std::string name, Ipp64f * param)
 {
 	DataExtractor extractor(name);
 	//Ipp64f params[9] = { 0.074, 475, 525, -60, 16, 1000, 0.5, 17, 8 };
 	UpdatePar(param);
-	Ipp64f *start = extractor.getDataArray();
+	Ipp64f *start = extractor.getDataArray(); 
 	nPoints = floor((extractor.getNumberOfLines()) / 2);
 	tol = 1E-10;
 	subMaxR = new Ipp64f[1];
-	temp1 = new Ipp64f[20 * nPoints];
+	temp1 = new Ipp64f[20*nPoints];
 	argCos = new Ipp64f[nPoints];
 	argSin = new Ipp64f[nPoints];
 	argkz = new Ipp64f[nPoints];
@@ -107,7 +107,7 @@ int FindFermi::PrintPar()
 {
 	cout << "parameter: ";
 	for (int i = 0; i < 10; ++i) {
-		cout << params[i] << ", ";
+		cout << params[i] <<", ";
 	}
 	cout << endl;
 	return 0;
@@ -185,7 +185,7 @@ int FindFermi::ReturnStart(Ipp64f * startpoint)
 	for (int i = 0; i < nPoints; i++) {
 
 		//fout << kx[i] << "\t" << ky[i] << "\t" << kz[i] << endl;
-		fout << theta[i] << "\t" << r[i] << "\t" << kz[i] << endl;
+		fout << theta[i]<<"\t"<<r[i]<< "\t" <<kz[i]<< endl;
 		//cout << kx[i] << "\t" << ky[i] << "\t" << kz[i] << endl;
 	}
 
@@ -196,7 +196,7 @@ int FindFermi::ReturnStart(Ipp64f * startpoint)
 
 int FindFermi::ReturnNumPoint()
 {
-	cout << "nPoints = " << &nPoints << "  " << nPoints << endl;
+	cout << "nPoints = " << &nPoints <<"  "<<nPoints<< endl;
 	return nPoints;
 }
 

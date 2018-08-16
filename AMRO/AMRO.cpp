@@ -440,9 +440,9 @@ int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMulC_64f(ky, 3.74767 / 2, temp, length);
 	vdCos(length, temp, &temp[8 * length]); // cos ky/2
 	ippsMulC_64f(kz, 6.6, temp, length);
-	vdSin(length, temp, &temp[9 * length]); // sin kz/2c
-	ippsMulC_64f(kz, 13.2, temp, length);
-	vdSin(length, temp, &temp[13 * length]);// sin kzc
+	vdSin(length, temp, &temp[9 * length]); // sin kzc/2
+	ippsMulC_64f(kz, 6.6, temp, length); // changed to kz c/2
+	vdSin(length, temp, &temp[13 * length]);// sin kzc **fixed to kz c/2
 
 	ippsSub_64f(&temp[4 * length], &temp[2 * length], &temp[11 * length], length);//cos kx - cos ky
 	ippsSqr_64f_I(&temp[11 * length], length);//square it
@@ -450,7 +450,7 @@ int veloZ(Ipp64f *params, Ipp64f *kx, Ipp64f *ky, Ipp64f *kz, int length, Ipp64f
 	ippsMul_64f_I(&temp[8 * length], &temp[11 * length], length);// times cos ky/2
 	ippsMul_64f_I(&temp[6 * length], &temp[11 * length], length);// times cos ky/2
 	ippsMulC_64f(&temp[11 * length], params[6 - 1] * 10.0571, out, length);
-	ippsMulC_64f(&temp[13 * length], params[7 - 1] * 10.0571 * 2, &temp[12 * length], length);//h7 term
+	ippsMulC_64f(&temp[13 * length], params[7 - 1] * 10.0571, &temp[12 * length], length);//h7 term ***removed factor of two when switching to cos kz from cos kz/2
 	ippsAdd_64f_I(&temp[12 * length], out, length);
 
 
